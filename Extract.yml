@@ -1,0 +1,46 @@
+name: Extract ZIP and Commit Files
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'omnirouter-ai.zip'
+
+jobs:
+  extract-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract ZIP file
+        run: |
+          if [ -f omnirouter-ai.zip ]; then
+            unzip -o omnirouter-ai.zip
+            echo "✅ ZIP extracted successfully"
+            ls -la
+          else
+            echo "❌ omnirouter-ai.zip not found"
+            exit 1
+          fi
+
+      - name: Remove ZIP file
+        run: |
+          rm -f omnirouter-ai.zip
+          echo "✅ ZIP file removed"
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "GitHub Actions Bot"
+
+      - name: Commit extracted files
+        run: |
+          git add -A
+          git diff --cached --exit-code || git commit -m "Extract omnirouter-ai.zip - Add project files"
+          
+      - name: Push changes
+        run: |
+          git push origin main || git push origin master || echo "Push completed"
