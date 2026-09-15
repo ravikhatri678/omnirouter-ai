@@ -40,3 +40,5 @@ jobs:
         with:
           name: OmniRouter-AI-debug-APK
           path: app/build/outputs/apk/debug/*.apk
+          retention-days: 1
+          compression-level: 0
